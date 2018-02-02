@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Find And Replace</title>
+    <style>
+        * {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: arial, sans-serif;
+        }
+
+        main {
+            max-width: 500px;
+            border: 1px solid #000;
+            padding: 20px;
+            margin: 20px auto;
+        }
+
+        .found-count {
+            text-align: center;
+            color: navy;
+            font-size: 24px;
+        }
+
+        input[type="text"] {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            font-family: inherit;
+            font-size: 18px;
+            border: 0;
+            border-bottom: 1px solid #000;
+        }
+
+        input[type="submit"] {
+            display: block;
+            max-width: 200px;
+            width: 100%;
+            background: #000;
+            color: #fff;
+            text-align: center;
+            margin: auto;
+            padding: 20px;
+            border: 0;
+            cursor: pointer;
+            transition: ease .4s;
+            border-radius: 12px;
+        }
+
+        input[type="submit"]:hover {
+            background: blue;
+            transition: ease .4s;
+        }
+
+        .colored {
+            color: red;
+            text-decoration: underline red;
+        }
+        .doItAndCasseInputDiv {
+            display: flex;
+            margin: auto;
+            justify-content: space-around;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    
+    <main>
+        <form>
+            <p>
+                <label for="find">Find : </label>
+                <input type="text" id="find" autocomplete="off">
+            </p>
+            <p>
+                <label for="replace">Replace : </label>
+                <input type="text" id="replace" autocomplete="off">
+            </p>
+            <div class="doItAndCasseInputDiv">
+                <p><input type="submit" value="DO IT ! JUST DO IT !"></p>
+                <p><input id="checkBox" type="checkbox">insensible à la casse</p>
+            </div>
+        </form>
+
+        <p class="found-count">We found and replaced <strong>0</strong> times</p>
+
+        <article>
+            <h1>Nekfeu - Egérie</h1>
+            <p>Je suis devenu celui dont aurait rêvé celui que je rêvais d'être</p>
+            <p>Tu me suis ? Je ne veux pas me réveiller</p>
+            <p>Une marque de luxe m'a dit on veut pas de rap, tu connais les che-ri</p>
+            <p>J'ai dit tant pi, tranquille, moi je parle ap</p>
+            <p>Le lendemain je me suis tapé leur egérie</p>
+            <p>Elle avait le visage de Nathalie Portman</p>
+            <p>Elle m'a dit moi non plus je ne veux pas de vie de couple</p>
+            <p>Cette nuit je veux me coupé de mon ce monde qui dégoûte</p>
+            <p>Bébé vient dans mon hotel et on éteint les portables</p>
+            <p>J'en connais un rayon, je ne raconte pas de disquette</p>
+            <p>Elle a mordu l'oreillé comme si c'était un cheesecake</p>
+            <p>Mais c'est toujours la même</p>
+            <p>Elle a tenu mes mains</p>
+            <p>Elle m'a dit tu m'aimes ?</p>
+            <p>J'ai dit non tu m'émeu</p>
+            <p>Je le répète je n'ai pas de repère</p>
+            <p>Tu n'es pas la seule vraie perle de mon repertoire</p>
+            <p>Un soir pété sous les réverbères</p>
+            <p>Peut être que je me retournerai vers toi</p>
+        </article>
+    </main>
+
+    <script>
+        var form = document.querySelector('form')
+        var input_find = document.querySelector('#find')
+        var input_replace = document.querySelector('#replace')
+        var checkBox = document.querySelector('#checkBox')
+        var found_count = document.querySelector('.found-count')
+        var textNekfeuDOM = document.querySelectorAll('article p')
+        var text = ''
+        var textNekfeuDOMTempon = []
+
+        let focus_blur_input = (input) => {
+            input.addEventListener('focus', function() {
+                input.placeholder = ""
+                input.style.background = 'yellow'
+                input.style.border = "2px solid blue"
+            })
+
+            input.addEventListener('blur', function() {
+                if (!input.value) {
+                    input.style.border = ""
+                    input.placeholder = "Écris un truc frère"
+                    input.style.background = "red"
+                } else {
+                    input.style.border = ""
+                    input.style.background = "green"
+                }
+            })
+        }
+
+        focus_blur_input(input_find)
+        focus_blur_input(input_replace)
+
+        for (var i = 0; i < textNekfeuDOM.length; i++) {
+            text += textNekfeuDOM[i].textContent + ' '
+            textNekfeuDOMTempon.push(textNekfeuDOM[i].textContent)
+        }
+        
+        form.addEventListener('submit', function(event) {
+            event.preventDefault()
+
+            for (var i = 0; i < textNekfeuDOMTempon.length; i++) {
+                textNekfeuDOM[i].textContent = textNekfeuDOMTempon[i]
+            }
+
+            if (input_find.value && input_replace.value) {
+                var text_to_find = input_find.value
+                var text_to_replace = input_replace.value
+                var count = 0
+                var last_index = 0
+                var text_replaced = ''
+
+                while(text.indexOf(text_to_find, last_index) > -1) {
+                    last_index = text.indexOf(text_to_find, last_index) + 1
+                    count++
+                }
+
+                if (checkBox.checked) {
+                    text_to_find = new RegExp(text_to_find, "gi")
+                } else {
+                    text_to_find = new RegExp(text_to_find, "g")
+                }
+
+                for (var i = 0; i < textNekfeuDOM.length; i++) {
+                    textNekfeuDOM[i].innerHTML = textNekfeuDOM[i].textContent.replace(text_to_find, '<span class=\'colored\'>' + text_to_replace + '</span>')
+                }
+
+                found_count.textContent = 'We found and replaced ' + count + ' times'
+                input_find.value = ''
+                input_replace.value = ''
+                input_find.style.background = ""
+                input_replace.style.background = ""
+            } else {
+                alert('Merci de remplir les deux champs :)')
+            }
+        })
+    </script>
+</body>
+</html>
