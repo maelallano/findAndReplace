@@ -58,8 +58,8 @@
         }
 
         .colored {
-            color: red;
-            text-decoration: underline red;
+            background: black;
+            color: white;
         }
         .doItAndCasseInputDiv {
             display: flex;
@@ -123,6 +123,7 @@
         var text = ''
         var textNekfeuDOMTempon = []
 
+
         let focus_blur_input = (input) => {
             input.addEventListener('focus', function() {
                 input.placeholder = ""
@@ -149,6 +150,18 @@
             text += textNekfeuDOM[i].textContent + ' '
             textNekfeuDOMTempon.push(textNekfeuDOM[i].textContent)
         }
+        
+        input_find.addEventListener(`input`, function() {
+            for (var i = 0; i < textNekfeuDOMTempon.length; i++) {
+                textNekfeuDOM[i].textContent = textNekfeuDOMTempon[i]
+            }
+
+            var text_to_find = input_find.value
+
+            for (var i = 0; i < textNekfeuDOM.length; i++) {
+                textNekfeuDOM[i].innerHTML = textNekfeuDOM[i].textContent.replace(text_to_find, '<span class=\'colored\'>' + text_to_find + '</span>')
+            }
+        })
         
         form.addEventListener('submit', function(event) {
             event.preventDefault()
